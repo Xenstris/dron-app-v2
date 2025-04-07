@@ -4,6 +4,9 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import { Suspense } from "react";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import TopBarNav from "./_components/TopNavBar";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -22,7 +25,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <Suspense>
+            <NuqsAdapter>
+              <TopBarNav />
+              {children}
+            </NuqsAdapter>
+          </Suspense>
+        </TRPCReactProvider>
       </body>
     </html>
   );

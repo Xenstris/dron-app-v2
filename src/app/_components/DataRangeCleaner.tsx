@@ -6,8 +6,7 @@ export function DataRangeCleaner() {
   const { date, setDate } = useGlobalProvider();
   return (
     <Button
-      variant="destructive"
-      className="h-10"
+      className="h-10 border-2 border-red-600/40 bg-black/40 text-red-400 backdrop-blur-md transition-colors focus:border-red-600 focus:ring-red-600/30"
       disabled={!date}
       onClick={() => setDate(undefined)}
     >

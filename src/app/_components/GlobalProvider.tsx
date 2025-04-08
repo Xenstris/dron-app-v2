@@ -21,6 +21,6 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useGlobalProvider = () => {
   const context = React.useContext(GlobalConext);
-  if (!context) throw new Error("must be used with GlobalProvider component");
+  if (!context) throw new Error("Must be used with GlobalProvider component");
   return context;
 };

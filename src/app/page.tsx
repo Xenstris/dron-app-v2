@@ -6,8 +6,8 @@ import LocationsTable from "./_components/LocationsTable";
 
 export default function Page() {
   return (
-    <main className="mx-auto w-full max-w-7xl space-y-2 p-4">
-      <div className="flex flex-row gap-2">
+    <main className="max-w-7x1 mx-auto w-full gap-4 space-y-6 p-3">
+      <div className="flex flex-row gap-4">
         <DataRangePicker />
         <DataRangeCleaner />
       </div>

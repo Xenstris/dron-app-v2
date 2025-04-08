@@ -7,6 +7,8 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { Suspense } from "react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import TopBarNav from "./_components/TopNavBar";
+import { Global } from "recharts";
+import { GlobalProvider } from "./_components/GlobalProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -28,8 +30,12 @@ export default function RootLayout({
         <TRPCReactProvider>
           <Suspense>
             <NuqsAdapter>
-              <TopBarNav />
-              {children}
+              <GlobalProvider>
+                <div className="min-h-screen bg-gradient-to-b from-slate-950 to-black p-2">
+                  <TopBarNav />
+                  {children}
+                </div>
+              </GlobalProvider>
             </NuqsAdapter>
           </Suspense>
         </TRPCReactProvider>

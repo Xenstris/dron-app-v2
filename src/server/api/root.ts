@@ -1,4 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { googleMapsRouter } from "./routers/googleMaps";
+import { locationRouter } from "./routers/locationSpots";
 
 /**
  * This is the primary router for your server.
@@ -7,6 +9,7 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   googleMaps: googleMapsRouter,
+  locationSpots: locationRouter,
 });
 
 // export type definition of API

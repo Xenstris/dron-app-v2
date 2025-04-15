@@ -31,7 +31,7 @@ export default function RootLayout({
           <Suspense>
             <NuqsAdapter>
               <GlobalProvider>
-                <div className="min-h-screen bg-gradient-to-b from-slate-950 to-black p-2">
+                <div className="min-h-screen space-y-4 bg-gradient-to-b from-slate-950 to-black p-2">
                   <TopBarNav />
                   {children}
                 </div>

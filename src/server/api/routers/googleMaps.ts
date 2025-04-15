@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { env } from "process";
+import { env } from "@/env";
 
 export const googleMapsRouter = createTRPCRouter({
   getLocationByLatLong: publicProcedure

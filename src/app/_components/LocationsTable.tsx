@@ -4,51 +4,25 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Clock, MapPin, Zap } from "lucide-react";
-import Image from "next/image";
 import { FaImage } from "react-icons/fa6";
 import { SiGooglemaps } from "react-icons/si";
+import { api } from "@/trpc/react";
+import { ImageGallery } from "./ImageGalerry";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface Coordinates {
-  latitude: number;
-  longitude: number;
+  x: number;
+  y: number;
 }
 
 interface Location {
   id: string;
-  timestamp: string;
-  name: string;
+  createdAt: Date;
   coordinates: Coordinates;
 }
 
-const mockLocations: Location[] = [
-  {
-    id: "1",
-    timestamp: "2023-07-15T14:30:00Z",
-    name: "Downtown District",
-    coordinates: { latitude: 52.2297, longitude: 21.0122 },
-  },
-  {
-    id: "2",
-    timestamp: "2023-07-15T16:45:00Z",
-    name: "Central Park Area",
-    coordinates: { latitude: 52.2315, longitude: 21.0067 },
-  },
-  {
-    id: "3",
-    timestamp: "2023-07-16T09:15:00Z",
-    name: "Industrial Zone",
-    coordinates: { latitude: 52.2278, longitude: 21.0024 },
-  },
-  {
-    id: "4",
-    timestamp: "2023-07-16T11:30:00Z",
-    name: "Riverside Monitoring",
-    coordinates: { latitude: 52.2326, longitude: 21.0353 },
-  },
-];
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
+const formatDate = (data: Date) => {
+  const date = new Date(data);
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "long",
     timeStyle: "medium",
@@ -56,7 +30,27 @@ const formatDate = (dateString: string) => {
 };
 
 function LocationName({ location }: { location: Location }) {
-  return <span>{location.name}</span>;
+  const { data, isLoading } = api.googleMaps.getLocationByLatLong.useQuery(
+    {
+      latitude: location.coordinates.x,
+      longitude: location.coordinates.y,
+    },
+    { staleTime: Infinity },
+  );
+
+  if (isLoading) {
+    return <p className="text-muted-foreground text-xs">Loading...</p>;
+  }
+
+  if (data) {
+    return <p className="text-muted-foreground text-xs">{data}</p>;
+  }
+
+  return (
+    <p className="text-xs">
+      {location.coordinates.x}, {location.coordinates.y}
+    </p>
+  );
 }
 
 function GoogleMapsLink({
@@ -68,7 +62,7 @@ function GoogleMapsLink({
 }) {
   return (
     <a
-      href={`https://www.google.com/maps/search/?api=1&query=${location.coordinates.latitude},${location.coordinates.longitude}`}
+      href={`https://www.google.com/maps/search/?api=1&query=${location.coordinates.x},${location.coordinates.y}`}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -79,6 +73,8 @@ function GoogleMapsLink({
 
 export default function LocationsTable() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const { data: locations } = api.locationSpots.getAll.useQuery();
 
   return (
     <div className="w-full space-y-4">
@@ -92,7 +88,7 @@ export default function LocationsTable() {
         </div>
       ) : (
         <div className="space-y-3">
-          {mockLocations.map((location) => (
+          {locations?.map((location) => (
             <div
               key={location.id}
               className="group relative overflow-hidden rounded-xl border border-slate-800/40 bg-black/40 backdrop-blur-md transition-all duration-300 hover:border-cyan-900/50 hover:shadow-lg hover:shadow-cyan-500/10"
@@ -114,7 +110,7 @@ export default function LocationsTable() {
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2 text-sm text-slate-400">
                       <Clock className="h-3 w-3" />
-                      <span>{formatDate(location.timestamp)}</span>
+                      <span>{formatDate(location.createdAt)}</span>
                     </div>
                     <div className="text-base font-medium text-slate-200 transition-colors duration-300 group-hover:text-white">
                       <LocationName location={location} />
@@ -134,7 +130,9 @@ export default function LocationsTable() {
                     </Button>
                   </GoogleMapsLink>
 
+                  {/* Dialog z galerią obrazów */}
                   <Dialog>
+                    <DialogTitle className="hidden"></DialogTitle>
                     <DialogTrigger asChild>
                       <Button
                         className="relative overflow-hidden bg-blue-500/80 text-white transition-all duration-300 hover:bg-blue-600/90"
@@ -146,15 +144,7 @@ export default function LocationsTable() {
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="border-slate-800 bg-black/90 backdrop-blur-xl">
-                      <div className="relative mt-2 overflow-hidden rounded-lg border border-slate-800">
-                        <Image
-                          src={`https://picsum.photos/600/400?random=${location.id}`}
-                          alt="Location image"
-                          width={600}
-                          height={400}
-                          className="w-full"
-                        />
-                      </div>
+                      <ImageGallery folderPath={`drone/${location.id}`} />
                     </DialogContent>
                   </Dialog>
                 </div>

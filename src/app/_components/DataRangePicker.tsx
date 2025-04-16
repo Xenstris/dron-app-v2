@@ -1,8 +1,6 @@
 "use client";
-
 import type * as React from "react";
 import { CalendarIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -64,51 +62,52 @@ export function DataRangePicker({
             </Button>
           </div>
         </PopoverTrigger>
-
         <PopoverContent
-          className="relative w-auto overflow-hidden rounded-xl border border-slate-800/40 bg-black/80 p-3 text-slate-300 shadow-lg shadow-black/40 backdrop-blur-xl"
           align="start"
+          className={cn(
+            "w-auto rounded-xl border border-slate-800/40 bg-black/80 p-0",
+            "text-slate-300 shadow-lg shadow-black/40 backdrop-blur-xl",
+          )}
         >
-          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-blue-500/5 opacity-30 blur-xl" />
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-            classNames={{
-              months: "space-y-4",
-              month: "space-y-4",
-              caption: "flex justify-center pt-1 relative items-center",
-              caption_label: "text-sm font-medium text-slate-200",
-              nav: "space-x-1 flex items-center",
-              nav_button:
-                "h-7 w-7 bg-slate-800/70 rounded-full hover:bg-slate-700/90 transition-colors duration-200 inline-flex justify-center items-center text-slate-300 hover:text-white",
-              nav_button_previous: "absolute left-1",
-              nav_button_next: "absolute right-1",
-              table: "w-full border-collapse space-y-1",
-              head_row: "flex",
-              head_cell:
-                "text-slate-400 rounded-md w-9 font-normal text-[0.8rem]",
-              row: "flex w-full mt-2",
-              cell: "h-9 w-9 text-center text-sm relative p-0 focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-slate-800/30 rounded-md",
-              day: "h-9 w-9 p-0 flex items-center justify-center rounded-md text-sm transition-colors duration-200 hover:bg-slate-800/70 aria-selected:opacity-100",
-              day_range_start:
-                "bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:bg-none",
-              day_range_end:
-                "bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:bg-none",
-              day_range_middle:
-                "bg-slate-800/70 text-slate-200 hover:bg-slate-700/90 hover:text-white",
-              day_selected:
-                "bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:bg-none",
-              day_today:
-                "ring-2 ring-cyan-500/50 ring-offset-1 ring-offset-black",
-              day_outside: "text-slate-500 opacity-50",
-              day_disabled: "text-slate-500 opacity-50",
-              day_hidden: "invisible",
-            }}
-          />
+          <div>
+            <Calendar
+              mode="range"
+              numberOfMonths={2}
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={setDate}
+              className="w-full"
+              classNames={{
+                months:
+                  "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                month: "space-y-4",
+                caption:
+                  "flex justify-center pt-1 relative items-center text-white font-semibold",
+                caption_label: "text-sm font-medium",
+                nav: "space-x-1 flex items-center",
+                nav_button:
+                  "h-7 w-7 bg-slate-800 bg-opacity-50 hover:bg-slate-700 rounded-md flex items-center justify-center text-white",
+                table: "w-full border-collapse space-y-1",
+                head_row: "flex",
+                head_cell:
+                  "text-slate-400 rounded-md w-9 font-normal text-[0.8rem]",
+                row: "flex w-full mt-2",
+                cell: "h-9 w-9 text-center text-sm relative p-0 focus-within:relative focus-within:z-20",
+                day: "h-9 w-9 p-0 flex items-center justify-center rounded-md text-slate-300 hover:bg-slate-700 hover:text-white",
+                day_selected:
+                  "bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:bg-gradient-to-r hover:from-cyan-600 hover:to-blue-600",
+                day_today: "border border-slate-500",
+                day_range_middle: "bg-slate-800 text-white rounded-md",
+                day_range_end:
+                  "bg-gradient-to-r from-cyan-500 to-blue-500 text-white",
+                day_range_start:
+                  "bg-gradient-to-r from-cyan-500 to-blue-500 text-white",
+                day_outside: "text-slate-500 opacity-50",
+                day_disabled: "text-slate-500 opacity-50",
+                day_hidden: "invisible",
+              }}
+            />
+          </div>
         </PopoverContent>
       </Popover>
     </div>

@@ -7,7 +7,6 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { Suspense } from "react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import TopBarNav from "./_components/TopNavBar";
-import { Global } from "recharts";
 import { GlobalProvider } from "./_components/GlobalProvider";
 
 export const metadata: Metadata = {

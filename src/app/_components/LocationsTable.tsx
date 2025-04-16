@@ -72,9 +72,11 @@ function GoogleMapsLink({
 }
 
 export default function LocationsTable() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
-  const { data: locations } = api.locationSpots.getAll.useQuery();
+  const { data: locations } = api.locationSpots.getAll.useQuery(undefined, {
+    refetchInterval: 5000,
+  });
 
   return (
     <div className="w-full space-y-4">
@@ -130,7 +132,6 @@ export default function LocationsTable() {
                     </Button>
                   </GoogleMapsLink>
 
-                  {/* Dialog z galerią obrazów */}
                   <Dialog>
                     <DialogTitle className="hidden"></DialogTitle>
                     <DialogTrigger asChild>

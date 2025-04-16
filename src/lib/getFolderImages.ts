@@ -21,11 +21,6 @@ export const getFolderImages = async ({
 }): Promise<string[]> => {
   if (!ACCESS_KEY) throw new Error("Missing access key!");
 
-  console.log(
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    path,
-  );
-
   const options = {
     method: "GET",
     headers: {
@@ -38,10 +33,6 @@ export const getFolderImages = async ({
 
   const res = await fetch(url, options);
 
-  console.log(
-    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
-    res,
-  );
   if (!res.ok) {
     throw new Error("Failed to list files from Bunny Storage");
   }

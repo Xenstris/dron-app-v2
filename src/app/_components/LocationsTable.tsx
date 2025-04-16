@@ -9,6 +9,7 @@ import { SiGooglemaps } from "react-icons/si";
 import { api } from "@/trpc/react";
 import { ImageGallery } from "./ImageGalerry";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { useGlobalProvider } from "./GlobalProvider";
 
 interface Coordinates {
   x: number;
@@ -74,9 +75,14 @@ function GoogleMapsLink({
 export default function LocationsTable() {
   const [isLoading] = useState(false);
 
-  const { data: locations } = api.locationSpots.getAll.useQuery(undefined, {
-    refetchInterval: 5000,
-  });
+  const { date } = useGlobalProvider();
+
+  const { data: locations } = api.locationSpots.getAll.useQuery(
+    { from: date?.from?.toISOString(), to: date?.to?.toISOString() },
+    {
+      refetchInterval: 5000,
+    },
+  );
 
   return (
     <div className="w-full space-y-4">

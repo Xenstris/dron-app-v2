@@ -1,17 +1,39 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { locationSpot } from "@/server/db/schema";
 import { z } from "zod";
-import { desc, sql } from "drizzle-orm";
+import { and, desc, gte, lte, sql } from "drizzle-orm";
 
 export const locationRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const data = await ctx.db
-      .select()
-      .from(locationSpot)
-      .orderBy(desc(locationSpot.createdAt));
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          from: z.string().datetime().optional(),
+          to: z.string().datetime().optional(),
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      const where = [];
 
-    return data;
-  }),
+      if (input?.from) {
+        where.push(gte(locationSpot.createdAt, new Date(input.from)));
+      }
+
+      if (input?.to) {
+        const inclusiveTo = new Date(input.to);
+        inclusiveTo.setHours(23, 59, 59, 999);
+        where.push(lte(locationSpot.createdAt, inclusiveTo));
+      }
+
+      const data = await ctx.db
+        .select()
+        .from(locationSpot)
+        .where(where.length ? and(...where) : undefined)
+        .orderBy(desc(locationSpot.createdAt));
+
+      return data;
+    }),
   insertLocationSpot: publicProcedure
     .input(
       z.object({

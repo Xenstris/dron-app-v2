@@ -124,34 +124,61 @@ export default function MapComponent() {
 
   const fetchDroneLocation =
     useCallback(async (): Promise<google.maps.LatLngLiteral | null> => {
-      // Symulacja pobierania danych z API
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // Zamockowane dane - zastąp to prawdziwym wywołaniem API
-          const mockDronePosition: google.maps.LatLngLiteral = {
-            lat: 52.408,
-            lng: 16.915,
+      try {
+        // Pobierz z Twojego endpointu API w Next.js
+        const res = await fetch("/api/getDroneLocation", { cache: "no-store" });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = (await res.json()) as {
+          status: {
+            latitude: number;
+            longitude: number;
+            abs_altitude: number;
+            rel_altitude: number;
           };
-          resolve(mockDronePosition);
-        }, 1000); // Symulacja opóźnienia 1 sekundy
-      });
+        };
+
+        return { lat: data.status.latitude, lng: data.status.longitude };
+      } catch (err) {
+        console.error(
+          "Błąd podczas pobierania lub parsowania lokalizacji drona:",
+          err,
+        );
+        return null;
+      }
     }, []);
 
   useEffect(() => {
-    const getInitialDroneLocation = async () => {
-      const location = await fetchDroneLocation();
-      if (location) {
-        setDroneLocation(location);
+    if (!map) return; // czekamy na załadowanie mapy
+
+    // 1) helper z fetch + setState + catch
+    const updateDroneLocation = async () => {
+      try {
+        const loc = await fetchDroneLocation();
+        if (loc) setDroneLocation(loc);
+      } catch (error) {
+        console.error("Błąd podczas aktualizacji pozycji drona:", error);
       }
     };
 
-    getInitialDroneLocation().catch((error) => {
-      console.error("Błąd podczas pobierania lokalizacji drona:", error);
-    });
+    // 2) od razu pierwsze pobranie i user location
+    void updateDroneLocation();
     getCurrentLocation();
 
+    // 3) polling co 2s
+    const intervalId = setInterval(() => {
+      void updateDroneLocation();
+    }, 10000);
+
+    // 4) cleanup
+    return () => {
+      clearInterval(intervalId);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchDroneLocation, map]);
+  }, [map]);
 
   const focusOnDrone = useCallback(() => {
     if (droneLocation && map) {

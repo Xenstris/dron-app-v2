@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Crosshair, Trash2, Undo, Target } from "lucide-react";
 import { GoogleMap, MarkerF, PolylineF } from "@react-google-maps/api";
+import { useGlobalProvider } from "../GlobalProvider";
 
 interface Marker {
   id: string;
@@ -27,7 +28,7 @@ const mapOptions = {
 };
 
 export default function MapComponent() {
-  const [markers, setMarkers] = useState<Marker[]>([]);
+  const { markers, setMarkers } = useGlobalProvider();
   const [isLoading, setIsLoading] = useState(true);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [userLocation, setUserLocation] =
@@ -50,9 +51,9 @@ export default function MapComponent() {
         timestamp: new Date(),
       };
 
-      setMarkers((prev) => [...prev, newMarker]);
+      setMarkers((prev: Marker[]) => [...prev, newMarker]); //
     },
-    [map],
+    [map, setMarkers],
   );
 
   useEffect(() => {
@@ -109,19 +110,6 @@ export default function MapComponent() {
     setMarkers([]);
   }, []);
 
-  const showMarkersData = useCallback(() => {
-    console.log("--- Dane Markerów ---");
-    markers.forEach((marker) => {
-      console.log(
-        `ID: ${marker.id}, Pozycja: { lat: ${marker.position.lat}, lng: ${marker.position.lng} }, Czas: ${marker.timestamp.toLocaleString()}`,
-      );
-    });
-    if (markers.length === 0) {
-      console.log("Brak zapisanych markerów.");
-    }
-    console.log("----------------------");
-  }, [markers]);
-
   const fetchDroneLocation =
     useCallback(async (): Promise<google.maps.LatLngLiteral | null> => {
       try {
@@ -171,7 +159,7 @@ export default function MapComponent() {
     // 3) polling co 2s
     const intervalId = setInterval(() => {
       void updateDroneLocation();
-    }, 10000);
+    }, 1000);
 
     // 4) cleanup
     return () => {
@@ -320,13 +308,6 @@ export default function MapComponent() {
         >
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-rose-400/30 to-rose-600/30 opacity-0 blur-md transition-all duration-300 hover:opacity-100" />
           <Trash2 className="h-4 w-4" />
-        </Button>
-
-        <Button
-          onClick={showMarkersData}
-          className="bg-gray-500/80 text-white transition-all duration-300 hover:bg-gray-600/90"
-        >
-          Pokaż Markery
         </Button>
       </div>
     </div>

@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import TopBarNav from "./_components/TopNavBar";
 import { GlobalProvider } from "./_components/GlobalProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -30,9 +31,10 @@ export default function RootLayout({
           <Suspense>
             <NuqsAdapter>
               <GlobalProvider>
-                <div className="min-h-screen space-y-4 bg-gradient-to-b from-slate-950 to-black p-2">
+                <div className="min-h-screen space-y-4 bg-gradient-to-b from-slate-950 from-30% to-black to-95% p-2">
                   <TopBarNav />
                   {children}
+                  <Toaster position="top-center" richColors />
                 </div>
               </GlobalProvider>
             </NuqsAdapter>

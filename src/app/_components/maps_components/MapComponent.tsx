@@ -206,6 +206,7 @@ export default function MapComponent() {
         options={mapOptions}
         onLoad={onMapLoad}
         onClick={onMapClick}
+        mapTypeId="satellite"
       >
         {userLocation && (
           <MarkerF
